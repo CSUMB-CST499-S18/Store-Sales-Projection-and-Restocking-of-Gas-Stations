@@ -1,3 +1,15 @@
+<?php
+
+session_start();
+if (!isset($_SESSION['username'])) {  //checks whether the admin is logged in
+    header("Location: login.php");
+}
+
+include 'dbConnection.php';
+
+$con = getDatabaseConnection('heroku_87e7042268995be');
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -22,16 +34,19 @@
       <form action="users.php" method="GET">
         <input id="search" type="text" placeholder="Type here">
         <input id="submit" type="submit" value="Search">
-        <input id="reorder soon" type="submit" value="reorder soon">
+      </form>
+      <form action="404.html">
+        <input type="submit" value="reorder soon">
+      </form>
+      <form action="logout.php">
+        <input type="submit" value="Logout" />
       </form>
      </div>
    </section>
+
       <div class="clear"></div>
-      <div class="column">
-          <div class="nav-sidebar"> 
-                insert list of distributors here!      
-          </div>
-      </div>
+     
+<section class="container2">
    <h2 class="sub-header">Section title</h2>
           <div class="table-responsive">
             <table class="table table-striped">
@@ -44,6 +59,105 @@
                   <th>Projected</th>
                 </tr>
                 </thead>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                
                 <tbody>
                </tbody>
             </table>
@@ -51,7 +165,6 @@
         </div>
       </div>
     </div>
-            
-            
+</section>
     </body>
 </html>
