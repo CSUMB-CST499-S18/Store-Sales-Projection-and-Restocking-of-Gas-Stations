@@ -4,16 +4,22 @@ import numpy as np
 from statsmodels.tsa.arima_process import arma_generate_sample
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from pandas.plotting import lag_plot
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.arima_model import ARIMA
+from pandas.plotting import lag_plot
 from sklearn.metrics import mean_squared_error
 import warnings
 from pandas import DataFrame
 from pandas import concat
 import tensorflow as tf
+from random import randint
+
 
 
 #top level function to return the results
 def getResults(itemName):
 
+    #open the file
     df = openPreprocess("./data/sales.csv")
 
     itemSales = getSales(df, itemName)
@@ -29,19 +35,21 @@ def getResults(itemName):
 
     X = data.iloc[:,0:8]
     y = data.iloc[:,8]
+    print(X)
 
     #Break into training and testing data
-    X_train = X[:355]
-    X_val = X[355:385]
-    X_test = X[385:]
+    X_train = X[:350]
+    X_val = X[350:380]
+    X_test = X[380:]
 
-    y_train = y[:355]
-    y_val = y[355:385]
-    y_test = y[385:]
+    y_train = y[:350]
+    y_val = y[350:380]
+    y_test = y[380:]
     predicted_dates = dates[385:]
 
     #train the neural network and return the results
     results, RMSE = neuralNet(X_train, y_train, X_val, y_val, X_test, y_test)
+    # results2, RMSE2 = arimaModel(X_train, y_train, X_val, y_val, X_test, y_test)
 
     print("The predictions of the next 10 days are: ")
 
@@ -50,6 +58,8 @@ def getResults(itemName):
 
     #Compare with currently used method
     print("The neural net performed: ", simpleAverageRMSE(RMSE, X_test, y_test), "% times better compared to the previous method!")
+    # print("The ARIMA model performed: ", simpleAverageRMSE(RMSE2, X_test, y_test), "% times better compared to the previous method!")
+
 
 
 #opens CSV and preprocesses data
@@ -119,10 +129,72 @@ def simpleAverageRMSE(RMSE, X_val, y_test):
     average = np.mean(last10)
 
     #make 10 same ones
-    predicts_avg = [average]*10
+    predicts_avg = [average]*15
 
     # print("Simple average prediction RMSE: ", np.sqrt(mean_squared_error(predicts_avg,y_test)))
     return np.sqrt(mean_squared_error(predicts_avg,y_test))*100/RMSE
+
+def arimaModel(X_train, y_train, X_val, y_val, X_test, y_test):
+
+    X_tr = X_train.iloc[:,0].values
+    X_v = X_val.iloc[:,0].values
+    X_te = X_test.iloc[:,0].values
+
+    print(X_tr)
+
+    #suppress warnings
+    warnings.filterwarnings("ignore")
+
+    #tune the model and find the best parameters
+    bestorder = arimaGridSearch(X_tr, X_v, [1,2,3,4,5],[0,1,2,3],[0,1,2,3,4,5])
+
+    model = ARIMA(X_tr, bestorder)
+    model_fit = model.fit()
+
+    predict = model_fit.forecast(steps=forecast_length)[0]
+
+    # compute the error
+    rmse = np.sqrt(mean_squared_error(X_te, predict))
+
+    print("ARIMA Test RMSE: ", rmse)
+
+    return predictions, RMSE
+
+#this dickey fuller test checks stationarity of the time series in order to fit an ARIMA model
+def testStationarity(X):
+
+    print("Results of Dickey-Fuller Test:")
+
+    dftest = adfuller(timeseries, autolag='AIC')
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','p-value','#Lags Used','Number of Observations Used'])
+
+    for key,value in dftest[4].items():
+        dfoutput['Critical Value (%s)'%key] = value
+    print(dfoutput)
+
+#find the best
+def arimaGridSearch(X_train, X_val, p_values, d_values, q_values):
+    bestrmse = 100
+    # bestorder = (2,2,2)
+    for p in p_values:
+        for d in d_values:
+            for q in q_values:
+                order = (p,d,q)
+                try:
+                    model = ARIMA(X_train, order)
+                    model_fit = model.fit()
+                    predict = model_fit.forecast(steps=forecast_length)[0]
+                    rmse = np.sqrt(mean_squared_error(X_val, predict))
+                    print(order, " ", rmse)
+
+                    if rmse < bestrmse:
+                        bestrmse = rmse
+                        bestorder = order
+                except:
+                    continue
+    print("Best Overall: ", bestorder, bestrmse)
+    return bestorder
+
 
 #Build and run the Neural Net
 def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
@@ -172,26 +244,33 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
     #initialize graph
     init = tf.global_variables_initializer()
 
-    n_epochs = 2000 #times the data will be trained on
+    n_epochs = 300 #times the data will be trained on
+    batch_size = 30
+
 
     with tf.Session() as sess:
         init.run()
         for epoch in range(n_epochs):
 
+            for i in range(5):
+                i = randint(0, 319)
+                X_batch = X_train[i : i + batch_size]
+                y_batch = y_train[i : i + batch_size]
+                sess.run(training_op, feed_dict={X: X_train, y: y_train})
             #Train on the training data
-            sess.run(training_op, feed_dict={X: X_train, y: y_train})
 
             #Test on the validation data every 5000 epochs
-            if epoch % 1000 == 0:
+            if epoch % 50 == 0:
                 print("Epoch", epoch, "RMSE (lower is better) =", np.sqrt(mse.eval(feed_dict={X: X_val, y: y_val})))
 
         #Finally, test on the test dataset
         predictions = results.eval(feed_dict={X: X_test, y: y_test})
         testRMSE = np.sqrt(mse.eval(feed_dict={X: X_test, y: y_test}))
 
-        print("Test RMSE: ", testRMSE)
+        print("NN Test RMSE: ", testRMSE)
         return predictions, testRMSE
 
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
-getResults("MARL GOLD")
+getResults("TIC TAC BIG PK FRUIT")
+# getResults("PYRAMID RED BOX")
