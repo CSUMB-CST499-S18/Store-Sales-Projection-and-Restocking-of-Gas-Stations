@@ -16,6 +16,7 @@ from random import randint
 from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
+import json
 
 
 #top level function to return the results
@@ -57,12 +58,12 @@ def getResults(itemName):
 
     print("The predictions of the next 10 days are: ")
 
-    for i in range(10):
-        print(predicted_dates[i], results2[i])
 
     #Compare with currently used method
     print("The neural net performed: ", simpleAverageRMSE(RMSE, X_test, y_test), "% times better compared to the previous method!")
     # print("The ARIMA model performed: ", simpleAverageRMSE(RMSE2, X_test, y_test), "% times better compared to the previous method!")
+
+    return predicted_dates, results
 
 
 
@@ -309,4 +310,6 @@ def LSTMModel(X_train, y_train, X_test, y_test):
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")
-getResults("FRITO CHEETOS HOT")
+times, results = getResults("FRITO CHEETOS HOT")
+print(times)
+print(results)
