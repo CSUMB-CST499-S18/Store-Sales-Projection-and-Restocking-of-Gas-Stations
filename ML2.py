@@ -172,39 +172,16 @@ def testStationarity(X):
         dfoutput['Critical Value (%s)'%key] = value
     print(dfoutput)
 
-#find the best
-def arimaGridSearch(X_train, X_val, p_values, d_values, q_values):
-    bestrmse = 100
-    # bestorder = (2,2,2)
-    for p in p_values:
-        for d in d_values:
-            for q in q_values:
-                order = (p,d,q)
-                try:
-                    model = ARIMA(X_train, order)
-                    model_fit = model.fit()
-                    predict = model_fit.forecast(steps=forecast_length)[0]
-                    rmse = np.sqrt(mean_squared_error(X_val, predict))
-                    print(order, " ", rmse)
-
-                    if rmse < bestrmse:
-                        bestrmse = rmse
-                        bestorder = order
-                except:
-                    continue
-    print("Best Overall: ", bestorder, bestrmse)
-    return bestorder
-
 
 #Build and run the Neural Net
 def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
 
     #define number of features, and nodes in hidden layers
     n_inputs = 8  # MNIST
-    n_hidden1 = 100
-    n_hidden2 = 100
-    n_hidden3 = 50
-    n_hidden4 = 10
+    n_hidden1 = 20
+    n_hidden2 = 20
+    n_hidden3 = 20
+    n_hidden4 = 20
     #number of outputs is 1, since we have a regression task
     n_outputs = 1
 
@@ -225,11 +202,11 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
                                   activation=tf.nn.elu)
         hidden2 = tf.layers.dense(hidden1, n_hidden2, name="hidden2",
                                   activation=tf.nn.elu)
-        hidden3 = tf.layers.dense(hidden2, n_hidden3, name="hidden3",
-                                  activation=tf.nn.elu)
-        hidden4 = tf.layers.dense(hidden3, n_hidden4, name="hidden4",
-                                  activation=tf.nn.elu)
-        results = tf.layers.dense(hidden4, n_outputs, name="outputs")
+        # hidden3 = tf.layers.dense(hidden2, n_hidden3, name="hidden3",
+        #                           activation=tf.nn.elu)
+        # hidden4 = tf.layers.dense(hidden3, n_hidden4, name="hidden4",
+        #                           activation=tf.nn.elu)
+        results = tf.layers.dense(hidden2, n_outputs, name="outputs")
 
     #Calculate the results and the mean squared error
     with tf.name_scope("loss"):
@@ -246,12 +223,15 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
 
     n_epochs = 300 #times the data will be trained on
     batch_size = 30
+    min = 100 #minimum validation rmse
+    count = 3
 
 
     with tf.Session() as sess:
         init.run()
         for epoch in range(n_epochs):
 
+            #create batches
             for i in range(5):
                 i = randint(0, 319)
                 X_batch = X_train[i : i + batch_size]
@@ -260,8 +240,19 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
             #Train on the training data
 
             #Test on the validation data every 5000 epochs
-            if epoch % 50 == 0:
-                print("Epoch", epoch, "RMSE (lower is better) =", np.sqrt(mse.eval(feed_dict={X: X_val, y: y_val})))
+            if epoch % 20 == 0:
+
+
+                currvalerror = np.sqrt(mse.eval(feed_dict={X: X_val, y: y_val}))
+                if(currvalerror < min):
+                    min = currvalerror
+                    count = 3
+                else:
+                    count -= 1
+                    if(count == 0):
+                        break
+
+                print("Epoch", epoch, "RMSE (lower is better) =", currvalerror)
 
         #Finally, test on the test dataset
         predictions = results.eval(feed_dict={X: X_test, y: y_test})
