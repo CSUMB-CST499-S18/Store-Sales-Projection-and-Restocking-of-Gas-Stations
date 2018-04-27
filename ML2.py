@@ -13,7 +13,9 @@ from pandas import DataFrame
 from pandas import concat
 import tensorflow as tf
 from random import randint
-
+from keras.layers.core import Dense, Activation, Dropout
+from keras.layers.recurrent import LSTM
+from keras.models import Sequential
 
 
 #top level function to return the results
@@ -35,7 +37,6 @@ def getResults(itemName):
 
     X = data.iloc[:,0:8]
     y = data.iloc[:,8]
-    print(X)
 
     #Break into training and testing data
     X_train = X[:350]
@@ -47,14 +48,17 @@ def getResults(itemName):
     y_test = y[380:]
     predicted_dates = dates[385:]
 
+    X_train2 = X[:380]
+    y_train2 = y[:380]
+
     #train the neural network and return the results
     results, RMSE = neuralNet(X_train, y_train, X_val, y_val, X_test, y_test)
-    # results2, RMSE2 = arimaModel(X_train, y_train, X_val, y_val, X_test, y_test)
+    # results2, RMSE2 = LSTMModel(X_train2, y_train2, X_test, y_test)
 
     print("The predictions of the next 10 days are: ")
 
     for i in range(10):
-        print(predicted_dates[i], results[i])
+        print(predicted_dates[i], results2[i])
 
     #Compare with currently used method
     print("The neural net performed: ", simpleAverageRMSE(RMSE, X_test, y_test), "% times better compared to the previous method!")
@@ -246,7 +250,7 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
                 currvalerror = np.sqrt(mse.eval(feed_dict={X: X_val, y: y_val}))
                 if(currvalerror < min):
                     min = currvalerror
-                    count = 3
+                    count = 2
                 else:
                     count -= 1
                     if(count == 0):
@@ -261,7 +265,48 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
         print("NN Test RMSE: ", testRMSE)
         return predictions, testRMSE
 
+
+def LSTMModel(X_train, y_train, X_test, y_test):
+
+    #Keep the values in order to reshape
+    X_train = X_train.values
+    X_test = X_test.values
+
+
+    # inputs need to be reshaped in the form of [samples, time steps, features]
+    X_train = np.reshape(X_train, (X_train.shape[0], 1, X_train.shape[1]))
+    X_test = np.reshape(X_test, (X_test.shape[0], 1, X_test.shape[1]))
+
+    #Sequentially append layers
+    model = Sequential()
+
+    #Add an LSTM layer
+    model.add(LSTM(input_shape=(1,8), output_dim=20, return_sequences=True))
+
+    #Add 20% probability of dropout in layer
+    model.add(Dropout(0.2))
+
+    #Add a second lstm layer
+    model.add(LSTM(40, return_sequences=False))
+
+    #Add a dense layer
+    model.add(Dense(output_dim=1))
+
+    #tanh is popular as an activation function for recurrent neural networks
+    model.add(Activation('tanh'))
+
+    #Use adam optimizer
+    model.compile(loss='mse', optimizer='Adam')
+
+    #fit the model
+    model.fit(X_train, y_train, batch_size=10, epochs=5, validation_split=0.1)
+
+    #predict
+    predictions = model.predict(X_test)
+    RMSE =  np.sqrt(mean_squared_error(y_test, predictions))
+
+    return predictions, RMSE
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
-getResults("TIC TAC BIG PK FRUIT")
-# getResults("PYRAMID RED BOX")
+# getResults("TIC TAC BIG PK FRUIT")
+getResults("FRITO CHEETOS HOT")
