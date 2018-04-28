@@ -1,20 +1,7 @@
-<?php
-
-session_start();
-if (!isset($_SESSION['username'])) {  //checks whether the admin is logged in
-    header("Location: login.php");
-}
-
-include 'dbConnection.php';
-
-$con = getDatabaseConnection('heroku_87e7042268995be');
-?>
-
 <!DOCTYPE html>
 <html>
     <head>
-        <title>S.S.P.A.R</title>
-        <meta charset="utf-8">
+       <meta charset="utf-8">
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <!-- jQuery library -->
@@ -22,149 +9,22 @@ $con = getDatabaseConnection('heroku_87e7042268995be');
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="./css/styles.css" type="text/css" />
+        <title>Admin Login Page</title>
     </head>
-    
     <body>
-    <section class="container">
-      <div class="sscs"> 
+    <section class="admin">
+    <div class="sscs"> 
           <img src="./img/sscs-logo.png" alt="SSCS">
       </div> 
-      
-      <div class="search">
-      <form action="users.php" method="GET">
-        <input id="search" type="text" placeholder="Type here">
-        <input id="submit" type="submit" value="Search">
-      </form>
-      <form action="404.html">
-        <input type="submit" value="reorder soon">
-      </form>
-      <form action="logout.php">
-        <input type="submit" value="Logout" />
-      </form>
-     </div>
-   </section>
-
-      <div class="clear"></div>
-     
-<section class="container2">
-   <h2 class="sub-header">Section title</h2>
-          <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                  <th>#</th>
-                  <th>Item</th>
-                  <th>Distributor</th>
-                  <th>Current Stock</th>
-                  <th>Projected</th>
-                </tr>
-                </thead>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                
-                <tbody>
-               </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-</section>
+      <br/>
+      <h1> - S.S.P.A.R. -</h1>
+       <h2> - Admin Login -</h2>
+        <form action="processLogin.php"  method="post">
+            Username: <input type="text" name="username" /> <br />
+            Password: <input type="password" name="password"  />
+            <br>
+            <input type="submit" name="loginForm" />
+        </form>
+    </section>
     </body>
 </html>
