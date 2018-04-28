@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from statsmodels.tsa.arima_process import arma_generate_sample
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+# from statsmodels.tsa.arima_process import arma_generate_sample
+# from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from pandas.plotting import lag_plot
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.tsa.arima_model import ARIMA
+# from statsmodels.tsa.stattools import adfuller
+# from statsmodels.tsa.arima_model import ARIMA
 from pandas.plotting import lag_plot
 from sklearn.metrics import mean_squared_error
 import warnings
@@ -13,15 +13,20 @@ from pandas import DataFrame
 from pandas import concat
 import tensorflow as tf
 from random import randint
-from keras.layers.core import Dense, Activation, Dropout
-from keras.layers.recurrent import LSTM
-from keras.models import Sequential
-import json
+# from keras.layers.core import Dense, Activation, Dropout
+# from keras.layers.recurrent import LSTM
+# from keras.models import Sequential
+# import json
 
 
 #top level function to return the results
 def getResults(itemName):
 
+    print("The item passed in is:", itemName['userInput'])
+    print("The item passed in is:", "HELLO")
+    
+    itemName = itemName['userInput']
+    
     #open the file
     df = openPreprocess("./data/sales.csv")
 
@@ -32,6 +37,7 @@ def getResults(itemName):
 
     #keep the values from the dataframe
     X = itemSales.values
+    # print(X)
 
     #turn the time series into supervised data
     data = makeSupervised(X)
@@ -85,6 +91,7 @@ def openPreprocess(path):
 #Selects the data for the item provided, and processes the data to create a time series
 def getSales(df, itemName):
     item = df.loc[df['Description'] == itemName]
+    print(item)
     item = item.drop(['Description'], axis = 1)
 
     #Convert the date to proper datetime format
@@ -104,7 +111,7 @@ def getSales(df, itemName):
     idx = pd.date_range('2016-11-01', '2017-11-30')
     item = item.reindex(idx, fill_value=0)
 
-    print("Shape after accounting for dates with no sales", item.shape)
+    # print("Shape after accounting for dates with no sales", item.shape)
 
     #one hot encode days
     item= pd.get_dummies(item, columns=['weekday'], prefix=['weekday'])
