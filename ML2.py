@@ -324,6 +324,8 @@ def turn_to_dict(date, prediction):
 
 def analyzer(data):
     dates, prediction = getResults(data)
+    dates = [str(i) for i in dates]
+    prediction = [str(i) for i in prediction]
     formatted_result = turn_to_dict(dates,prediction)
     print(formatted_result)
     return formatted_result
