@@ -307,9 +307,20 @@ def LSTMModel(X_train, y_train, X_test, y_test):
     RMSE =  np.sqrt(mean_squared_error(y_test, predictions))
 
     return predictions, RMSE
+    
+def turn_to_dict(date, prediction):
+    # res_dict = {str(date) +","+ str(prediction)}
+    res_dict = dict(zip(date, prediction))
+    return res_dict
+    # result = json.dumps(result_set)
+    
+
+def analyzer(data):
+    dates, prediction = getResults(data)
+    formatted_result = turn_to_dict(dates,prediction)
+    print(formatted_result)
+    return formatted_result
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")
-times, results = getResults("FRITO CHEETOS HOT")
-print(times)
-print(results)
+# analyzer("FRITO CHEETOS HOT")
