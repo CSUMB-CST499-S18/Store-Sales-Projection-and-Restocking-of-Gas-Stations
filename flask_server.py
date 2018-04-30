@@ -15,6 +15,7 @@ def learning():
     data = json.loads(request.data)
     response = analyzer(data)
     print("Arrived back to Server")
+    print(jsonify(response))
     return jsonify(response)
 
 

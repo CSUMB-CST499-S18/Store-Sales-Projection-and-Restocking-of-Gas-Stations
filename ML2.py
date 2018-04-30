@@ -320,6 +320,7 @@ def LSTMModel(X_train, y_train, X_test, y_test):
     
 def turn_to_dict(date, prediction):
     # res_dict = {str(date) +","+ str(prediction)}
+    
     res_dict = dict(zip(date, prediction))
     return res_dict
     # result = json.dumps(result_set)
@@ -328,11 +329,17 @@ def turn_to_dict(date, prediction):
 def analyzer(data):
     dates, prediction = getResults(data)
     dates = [str(i) for i in dates]
+    dates = str("Date:") + dates
+    print(dates)
     prediction = [str(i) for i in prediction]
+    prediction = str("Prediction:") + prediction
+    print(prediction)
     formatted_result = turn_to_dict(dates,prediction)
     print(formatted_result)
+    
     print("Got to end of analyzer")
-    return json.dumps(formatted_result)
+    print(json.dumps(formatted_result))
+    return formatted_result
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")
