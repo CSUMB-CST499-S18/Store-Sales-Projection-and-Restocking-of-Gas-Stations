@@ -13,10 +13,13 @@ from pandas import DataFrame
 from pandas import concat
 import tensorflow as tf
 from random import randint
+from flask import Flask
+from flask import jsonify
+
 # from keras.layers.core import Dense, Activation, Dropout
 # from keras.layers.recurrent import LSTM
 # from keras.models import Sequential
-# import json
+import json
 
 
 #top level function to return the results
@@ -328,7 +331,8 @@ def analyzer(data):
     prediction = [str(i) for i in prediction]
     formatted_result = turn_to_dict(dates,prediction)
     print(formatted_result)
-    return formatted_result
+    print("Got to end of analyzer")
+    return json.dumps(formatted_result)
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")

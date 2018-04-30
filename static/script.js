@@ -1,31 +1,23 @@
 $(document).ready(function(){
     $("#reorder").click(function(event){
+        console.log("Entered Ajax Function")
         var input = $("#user-input").val();
         $.ajax({
               type: "POST",
+              dataType: 'text',
               url: '/learning',
               data: JSON.stringify({userInput: input}),
               contentType: 'application/json',
               success: function(response){
-                    console.log(response.results);
-                   $("#results").text(response.results);
+                    console.log("Made it");
+                    console.log(response.formatted_result);
+                   $("#results").text(response.formatted_result);
                 },
+                 error: function(request,status, message) {
+                        console.log(request);
+                        console.log("----");
+                        console.log(status);
+                        }
           });
     });
 });
-
-// $(document).ready(function(){
-//         $("#submit").click(function(event){
-//                 var uInput = $("#user-input").val();
-//                 $.ajax({
-//                  type: "POST", //request type,
-//                  url:'/learning', //the page containing python script
-//                  data: JSON.stringify({userInput: uInput}),
-//                 contentType: 'application/json',
-//                         success: function(response){
-//                         console.log(response.average);
-//                             $("#results").text(response.average);
-//                           },
-//                     });
-//                 });
-//             });

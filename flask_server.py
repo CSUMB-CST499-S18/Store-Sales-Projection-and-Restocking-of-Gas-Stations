@@ -14,6 +14,7 @@ def learning():
     #loads requested data sent form frontend
     data = json.loads(request.data)
     response = analyzer(data)
+    print("Arrived back to Server")
     return jsonify(response)
 
 
