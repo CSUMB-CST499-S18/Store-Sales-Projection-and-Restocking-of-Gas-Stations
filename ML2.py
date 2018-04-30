@@ -26,8 +26,7 @@ import json
 def getResults(itemName):
 
     print("The item passed in is:", itemName['userInput'])
-    print("The item passed in is:", "HELLO")
-    
+
     itemName = itemName['userInput']
     
     #open the file
@@ -56,7 +55,7 @@ def getResults(itemName):
     y_train = y[:350]
     y_val = y[350:380]
     y_test = y[380:]
-    predicted_dates = dates[385:]
+    predicted_dates = dates[380:]
 
     X_train2 = X[:380]
     y_train2 = y[:380]
@@ -94,7 +93,7 @@ def openPreprocess(path):
 #Selects the data for the item provided, and processes the data to create a time series
 def getSales(df, itemName):
     item = df.loc[df['Description'] == itemName]
-    print(item)
+    # print(item)
     item = item.drop(['Description'], axis = 1)
 
     #Convert the date to proper datetime format
@@ -328,18 +327,23 @@ def turn_to_dict(date, prediction):
 
 def analyzer(data):
     dates, prediction = getResults(data)
-    dates = [str(i) for i in dates]
-    dates = str("Date:") + dates
-    print(dates)
-    prediction = [str(i) for i in prediction]
-    prediction = str("Prediction:") + prediction
-    print(prediction)
-    formatted_result = turn_to_dict(dates,prediction)
-    print(formatted_result)
     
-    print("Got to end of analyzer")
-    print(json.dumps(formatted_result))
-    return formatted_result
+    #make them strings
+    dates = [str(i) for i in dates]
+    prediction = [str(i) for i in prediction]
+    
+    #make a list of dictionaries
+    superlist = []
+    for i in range(len(dates)):
+        superlist.append({"Date": dates[i], "Prediction": prediction[i]})
+        
+    print(superlist)
+    # formatted_result = turn_to_dict(dates,prediction)
+    # print(formatted_result)
+    
+    # print("Got to end of analyzer")
+    # print(json.dumps(formatted_result))
+    return superlist
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")
