@@ -26,8 +26,7 @@ import json
 def getResults(itemName):
 
     print("The item passed in is:", itemName['userInput'])
-    print("The item passed in is:", "HELLO")
-    
+
     itemName = itemName['userInput']
     
     #open the file
@@ -56,7 +55,7 @@ def getResults(itemName):
     y_train = y[:350]
     y_val = y[350:380]
     y_test = y[380:]
-    predicted_dates = dates[385:]
+    predicted_dates = dates[380:]
 
     X_train2 = X[:380]
     y_train2 = y[:380]
@@ -94,7 +93,7 @@ def openPreprocess(path):
 #Selects the data for the item provided, and processes the data to create a time series
 def getSales(df, itemName):
     item = df.loc[df['Description'] == itemName]
-    print(item)
+    # print(item)
     item = item.drop(['Description'], axis = 1)
 
     #Convert the date to proper datetime format
@@ -368,7 +367,10 @@ def analyzer(data):
     # print("Got to end of analyzer")
     # print(json.dumps(formatted_result))
     return superlist
+<<<<<<< HEAD
 
+=======
+>>>>>>> 68cdc5d775106e7c3baf97f455181c736af4ab87
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")
