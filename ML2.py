@@ -318,6 +318,29 @@ def LSTMModel(X_train, y_train, X_test, y_test):
 
     return predictions, RMSE
     
+# def turn_to_dict(date, prediction):
+#     # res_dict = {str(date) +","+ str(prediction)}
+    
+#     res_dict = dict(zip(date, prediction))
+#     return res_dict
+#     # result = json.dumps(result_set)
+    
+
+# def analyzer(data):
+#     dates, prediction = getResults(data)
+#     dates = [str(i) for i in dates]
+#     dates = str("Date:") + dates
+#     print(dates)
+#     prediction = [str(i) for i in prediction]
+#     prediction = str("Prediction:") + prediction
+#     print(prediction)
+#     formatted_result = turn_to_dict(dates,prediction)
+#     print(formatted_result)
+    
+#     print("Got to end of analyzer")
+#     print(json.dumps(formatted_result))
+#     return formatted_result
+
 def turn_to_dict(date, prediction):
     # res_dict = {str(date) +","+ str(prediction)}
     
@@ -328,18 +351,24 @@ def turn_to_dict(date, prediction):
 
 def analyzer(data):
     dates, prediction = getResults(data)
-    dates = [str(i) for i in dates]
-    dates = str("Date:") + dates
-    print(dates)
-    prediction = [str(i) for i in prediction]
-    prediction = str("Prediction:") + prediction
-    print(prediction)
-    formatted_result = turn_to_dict(dates,prediction)
-    print(formatted_result)
     
-    print("Got to end of analyzer")
-    print(json.dumps(formatted_result))
-    return formatted_result
+    #make them strings
+    dates = [str(i) for i in dates]
+    prediction = [str(i) for i in prediction]
+    
+    #make a list of dictionaries
+    superlist = []
+    for i in range(len(dates)):
+        superlist.append({"Date": dates[i], "Prediction": prediction[i]})
+        
+    print(superlist)
+    # formatted_result = turn_to_dict(dates,prediction)
+    # print(formatted_result)
+    
+    # print("Got to end of analyzer")
+    # print(json.dumps(formatted_result))
+    return superlist
+
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")

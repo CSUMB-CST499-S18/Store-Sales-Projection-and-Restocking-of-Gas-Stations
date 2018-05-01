@@ -10,8 +10,10 @@ $(document).ready(function(){
               contentType: 'application/json',
               success: function(response){
                     console.log("Made it");
-                    console.log(response.formatted_result);
-                   $("#results").text(response.formatted_result);
+                    output = response;
+                    console.log(output);
+                    console.log(output);
+                   $("#results").text(output);
                 },
                  error: function(request,status, message) {
                         console.log(request);
@@ -20,4 +22,4 @@ $(document).ready(function(){
                         }
           });
     });
-});
+})
