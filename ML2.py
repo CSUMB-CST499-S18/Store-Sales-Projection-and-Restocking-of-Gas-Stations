@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from statsmodels.tsa.arima_process import arma_generate_sample
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+# from statsmodels.tsa.arima_process import arma_generate_sample
+# from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from pandas.plotting import lag_plot
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.tsa.arima_model import ARIMA
+# from statsmodels.tsa.stattools import adfuller
+# from statsmodels.tsa.arima_model import ARIMA
 from pandas.plotting import lag_plot
 from sklearn.metrics import mean_squared_error
 import warnings
@@ -13,15 +13,22 @@ from pandas import DataFrame
 from pandas import concat
 import tensorflow as tf
 from random import randint
-from keras.layers.core import Dense, Activation, Dropout
-from keras.layers.recurrent import LSTM
-from keras.models import Sequential
+from flask import Flask
+from flask import jsonify
+
+# from keras.layers.core import Dense, Activation, Dropout
+# from keras.layers.recurrent import LSTM
+# from keras.models import Sequential
 import json
 
 
 #top level function to return the results
 def getResults(itemName):
 
+    print("The item passed in is:", itemName['userInput'])
+
+    itemName = itemName['userInput']
+    
     #open the file
     df = openPreprocess("./data/sales.csv")
 
@@ -32,6 +39,7 @@ def getResults(itemName):
 
     #keep the values from the dataframe
     X = itemSales.values
+    # print(X)
 
     #turn the time series into supervised data
     data = makeSupervised(X)
@@ -47,7 +55,7 @@ def getResults(itemName):
     y_train = y[:350]
     y_val = y[350:380]
     y_test = y[380:]
-    predicted_dates = dates[385:]
+    predicted_dates = dates[380:]
 
     X_train2 = X[:380]
     y_train2 = y[:380]
@@ -85,6 +93,7 @@ def openPreprocess(path):
 #Selects the data for the item provided, and processes the data to create a time series
 def getSales(df, itemName):
     item = df.loc[df['Description'] == itemName]
+    # print(item)
     item = item.drop(['Description'], axis = 1)
 
     #Convert the date to proper datetime format
@@ -104,7 +113,7 @@ def getSales(df, itemName):
     idx = pd.date_range('2016-11-01', '2017-11-30')
     item = item.reindex(idx, fill_value=0)
 
-    print("Shape after accounting for dates with no sales", item.shape)
+    # print("Shape after accounting for dates with no sales", item.shape)
 
     #one hot encode days
     item= pd.get_dummies(item, columns=['weekday'], prefix=['weekday'])
@@ -307,9 +316,62 @@ def LSTMModel(X_train, y_train, X_test, y_test):
     RMSE =  np.sqrt(mean_squared_error(y_test, predictions))
 
     return predictions, RMSE
+    
+# def turn_to_dict(date, prediction):
+#     # res_dict = {str(date) +","+ str(prediction)}
+    
+#     res_dict = dict(zip(date, prediction))
+#     return res_dict
+#     # result = json.dumps(result_set)
+    
+
+# def analyzer(data):
+#     dates, prediction = getResults(data)
+#     dates = [str(i) for i in dates]
+#     dates = str("Date:") + dates
+#     print(dates)
+#     prediction = [str(i) for i in prediction]
+#     prediction = str("Prediction:") + prediction
+#     print(prediction)
+#     formatted_result = turn_to_dict(dates,prediction)
+#     print(formatted_result)
+    
+#     print("Got to end of analyzer")
+#     print(json.dumps(formatted_result))
+#     return formatted_result
+
+def turn_to_dict(date, prediction):
+    # res_dict = {str(date) +","+ str(prediction)}
+    
+    res_dict = dict(zip(date, prediction))
+    return res_dict
+    # result = json.dumps(result_set)
+    
+
+def analyzer(data):
+    dates, prediction = getResults(data)
+    
+    #make them strings
+    dates = [str(i) for i in dates]
+    prediction = [str(i) for i in prediction]
+    
+    #make a list of dictionaries
+    superlist = []
+    for i in range(len(dates)):
+        superlist.append({"Date": dates[i], "Prediction": prediction[i]})
+        
+    print(superlist)
+    # formatted_result = turn_to_dict(dates,prediction)
+    # print(formatted_result)
+    
+    # print("Got to end of analyzer")
+    # print(json.dumps(formatted_result))
+    return superlist
+<<<<<<< HEAD
+
+=======
+>>>>>>> 68cdc5d775106e7c3baf97f455181c736af4ab87
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
 # getResults("TIC TAC BIG PK FRUIT")
-times, results = getResults("FRITO CHEETOS HOT")
-print(times)
-print(results)
+# analyzer("FRITO CHEETOS HOT")
