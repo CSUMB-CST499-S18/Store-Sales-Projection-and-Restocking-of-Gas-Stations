@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 # from statsmodels.tsa.arima_process import arma_generate_sample
@@ -68,7 +68,7 @@ def getResults(itemName):
 
 
     #Compare with currently used method
-    print("The neural net performed: ", simpleAverageRMSE(RMSE, X_test, y_test), "% times better compared to the previous method!")
+    print("The neural net performed: ", simpleAverageRMSE(RMSE, X_test, y_test), "% compared to the previous method!")
     # print("The ARIMA model performed: ", simpleAverageRMSE(RMSE2, X_test, y_test), "% times better compared to the previous method!")
 
     return predicted_dates, results
@@ -266,13 +266,21 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
                     if(count == 0):
                         break
 
-                print("Epoch", epoch, "RMSE (lower is better) =", currvalerror)
+                print("Epoch", epoch, "RMSE =", currvalerror)
 
         #Finally, test on the test dataset
         predictions = results.eval(feed_dict={X: X_test, y: y_test})
         testRMSE = np.sqrt(mse.eval(feed_dict={X: X_test, y: y_test}))
+        
+        #fix predictions less than 0
+        for i in range(len(predictions)):
+            if predictions[i] < 0:
+                predictions[i] = 0
+                
+        # predictions = [0 for i in range(len(predictions)) if i < 0]
+                
 
-        print("NN Test RMSE: ", testRMSE)
+        print("Neural Network Test RMSE: ", testRMSE)
         return predictions, testRMSE
 
 
@@ -314,6 +322,7 @@ def LSTMModel(X_train, y_train, X_test, y_test):
     #predict
     predictions = model.predict(X_test)
     RMSE =  np.sqrt(mean_squared_error(y_test, predictions))
+    
 
     return predictions, RMSE
     
