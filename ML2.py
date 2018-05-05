@@ -30,9 +30,61 @@ def getResults(itemName):
     itemName = itemName['userInput']
     
     #open the file
-    df = openPreprocess("./data/sales.csv")
+    df = openPreprocess("./data/sales.csv", 1)
 
-    itemSales = getSales(df, itemName)
+    itemSales = getSales(df, itemName, 1)
+
+    #get the dates
+    dates = itemSales.index.values
+
+    #keep the values from the dataframe
+    X = itemSales.values
+    # print(X)
+
+    #turn the time series into supervised data
+    data = makeSupervised(X)
+
+    X = data.iloc[:,0:8]
+    y = data.iloc[:,8]
+
+    #Break into training and testing data
+    X_train = X[:350]
+    X_val = X[350:380]
+    X_test = X[380:]
+
+    y_train = y[:350]
+    y_val = y[350:380]
+    y_test = y[380:]
+    predicted_dates = dates[380:]
+
+    X_train2 = X[:380]
+    y_train2 = y[:380]
+
+    #train the neural network and return the results
+    results, RMSE = neuralNet(X_train, y_train, X_val, y_val, X_test, y_test)
+    # results2, RMSE2 = LSTMModel(X_train2, y_train2, X_test, y_test)
+
+    print("The predictions of the next 10 days are: ")
+
+
+    #Compare with currently used method
+    print("The neural net performed: ", simpleAverageRMSE(RMSE, X_test, y_test), "% times better compared to the previous method!")
+    # print("The ARIMA model performed: ", simpleAverageRMSE(RMSE2, X_test, y_test), "% times better compared to the previous method!")
+
+    return predicted_dates, results
+    
+
+#Function for lookup through POS
+def getResultsPOS(itemName):
+
+    print("The item passed in is:", itemName['userInput'])
+
+    itemName = itemName['userInput']
+    
+    #open the file
+    df = openPreprocess("./data/sales.csv", 2)
+
+    itemSales = getSales(df, itemName, 2)
 
     #get the dates
     dates = itemSales.index.values
@@ -76,7 +128,7 @@ def getResults(itemName):
 
 
 #opens CSV and preprocesses data
-def openPreprocess(path):
+def openPreprocess(path, searchType):
 
     dat = pd.read_csv(path)
 
@@ -85,16 +137,25 @@ def openPreprocess(path):
     dat.set_index('Date')
 
     #drop information that is not needed
-    df = dat.drop(['POSCode', 'SalesAmount'], axis = 1)
+    if searchType == 1:
+        df = dat.drop(['POSCode', 'SalesAmount'], axis = 1)
+    else:
+        df = dat.drop(['Description', 'SalesAmount'], axis = 1)
 
     return df
 
 
 #Selects the data for the item provided, and processes the data to create a time series
-def getSales(df, itemName):
-    item = df.loc[df['Description'] == itemName]
-    # print(item)
-    item = item.drop(['Description'], axis = 1)
+def getSales(df, itemName, searchType):
+    
+    if searchType == 1:
+        item = df.loc[df['Description'] == itemName]
+        # print(item)
+        item = item.drop(['Description'], axis = 1)
+    else:
+        item = df.loc[df['POSCode'] == itemName]
+        # print(item)
+        item = item.drop(['POSCode'], axis = 1)
 
     #Convert the date to proper datetime format
     item['Date'] = pd.to_datetime(item['Date'],format='%Y-%m-%d')
@@ -370,5 +431,5 @@ def analyzer(data):
 
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
-# getResults("TIC TAC BIG PK FRUIT")
+# getResultsPOS(410)
 # analyzer("FRITO CHEETOS HOT")
