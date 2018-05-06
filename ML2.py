@@ -43,10 +43,15 @@ def getResults(itemName):
 
     #turn the time series into supervised data
     data = makeSupervised(X)
+    # print("DATA",data)
+    
+    # print("SHAPE", data.shape)
 
-    X = data.iloc[:,0:8]
-    y = data.iloc[:,8]
 
+    X = data.iloc[:,0:24]
+    y = data.iloc[:,24]
+
+    # print("y",y)
     #Break into training and testing data
     X_train = X[:350]
     X_val = X[350:380]
@@ -95,9 +100,10 @@ def getResultsPOS(itemName):
 
     #turn the time series into supervised data
     data = makeSupervised(X)
+    
 
-    X = data.iloc[:,0:8]
-    y = data.iloc[:,8]
+    X = data.iloc[:,0:24]
+    y = data.iloc[:,24]
 
     #Break into training and testing data
     X_train = X[:350]
@@ -189,23 +195,29 @@ def makeSupervised(item):
 
     #shift columns so that the input of one instance can be the output of the
     #previous one
-    columns = [df.shift(i) for i in range(1,2)]
+    columns = [df.shift(i) for i in range(1,4)]
     columns.append(df)
 
     df = concat(columns,axis=1)
 
     df.fillna(0, inplace=True)
+    
+    # print(df)
 
     return df
 
 def simpleAverageRMSE(RMSE, X_val, y_test):
+    
+    # print("X_val",X_val)
     last10 = X_val.loc[20:,0]
+    last10 = last10.iloc[0]
 
+    # print("last10",last10)
     average = np.mean(last10)
 
     #make 10 same ones
     predicts_avg = [average]*15
-
+    
     # print("Simple average prediction RMSE: ", np.sqrt(mean_squared_error(predicts_avg,y_test)))
     return np.sqrt(mean_squared_error(predicts_avg,y_test))*100/RMSE
 
@@ -252,7 +264,7 @@ def testStationarity(X):
 def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
 
     #define number of features, and nodes in hidden layers
-    n_inputs = 8  # MNIST
+    n_inputs = 24  # MNIST
     n_hidden1 = 20
     n_hidden2 = 20
     n_hidden3 = 20
@@ -277,10 +289,10 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
                                   activation=tf.nn.elu)
         hidden2 = tf.layers.dense(hidden1, n_hidden2, name="hidden2",
                                   activation=tf.nn.elu)
-        # hidden3 = tf.layers.dense(hidden2, n_hidden3, name="hidden3",
-        #                           activation=tf.nn.elu)
-        # hidden4 = tf.layers.dense(hidden3, n_hidden4, name="hidden4",
-        #                           activation=tf.nn.elu)
+        hidden3 = tf.layers.dense(hidden2, n_hidden3, name="hidden3",
+                                  activation=tf.nn.elu)
+        hidden4 = tf.layers.dense(hidden3, n_hidden4, name="hidden4",
+                                  activation=tf.nn.elu)
         results = tf.layers.dense(hidden2, n_outputs, name="outputs")
 
     #Calculate the results and the mean squared error
@@ -327,7 +339,7 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
                     if(count == 0):
                         break
 
-                print("Epoch", epoch, "RMSE (lower is better) =", currvalerror)
+                # print("Epoch", epoch, "RMSE (lower is better) =", currvalerror)
 
         #Finally, test on the test dataset
         predictions = results.eval(feed_dict={X: X_test, y: y_test})
@@ -433,3 +445,15 @@ def analyzer(data):
 #Call the function with the product you want to predict the next 10 days for.
 # getResultsPOS(410)
 # analyzer("FRITO CHEETOS HOT")
+# getResults("BANANA")
+# getResults("FRITO CHEETOS HOT")
+# getResults("NEWP MEN")
+# getResults("DEW  20OZ")
+# getResults("MARL GOLD")
+# getResults("LOT $2 TRIPLE WIN")
+# getResults("COFF/TEA 20 OZ")
+# getResults("BLACK+MILD JAZZ PT")
+# getResults("GB PRESS")
+# getResults("RED BULL 12OZ")
+# getResults("CAMEL MEN SILVER")
+# 15% better than current methods
