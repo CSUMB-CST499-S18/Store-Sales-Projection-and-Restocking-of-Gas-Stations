@@ -38,3 +38,9 @@ table{
   margin: 10px 0;
 }
 
+#calendar {
+  max-width: 900px;
+  margin: 40px auto;
+
+}
+

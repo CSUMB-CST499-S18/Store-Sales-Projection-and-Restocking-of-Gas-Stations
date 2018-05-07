@@ -140,6 +140,10 @@ function listUsers() {
         <script>
               jArray= <?php echo json_encode($availableItems); ?>;
         </script>
+        <!--Full Calendar Dependencies-->
+        <link rel='stylesheet' href='fullcalendar-3.9.0/fullcalendar.css' />
+        <script src='fullcalendar-3.9.0/lib/moment.min.js'></script>
+        <script src='fullcalendar-3.9.0/fullcalendar.js'></script>
     </head>
     
     <body>
@@ -167,6 +171,31 @@ function listUsers() {
       <form action="logout.php">
         <input type="submit" value="Logout" />
       </form>
+     <!--Calendar is rendered here. Events need to be changed to reflect the actual contents-->
+     </div>
+      <div id = "calendar">
+         <script>
+            $('#calendar').fullCalendar({
+                defaultView: 'month',
+                events: [
+                    {
+                      title  : 'event1',
+                      start  : '2010-01-01'
+                    },
+                    {
+                      title  : 'event2',
+                      start  : '2010-01-05',
+                      end    : '2010-01-07'
+                    },
+                    {
+                      title  : 'event3',
+                      start  : '2010-01-09T12:30:00',
+                      allDay : false // will make the time show
+                    }
+                ],
+                height: 300
+            });
+         </script>
      </div>
    </section>
       <div class="clear"></div>
