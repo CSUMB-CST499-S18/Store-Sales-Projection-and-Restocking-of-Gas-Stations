@@ -100,6 +100,7 @@ def getResultsPOS(itemName):
 
     #get the dates
     dates = itemSales.index.values
+    predicted_dates = dates[380:]
 
     #keep the values from the dataframe
     X = itemSales.values
@@ -108,7 +109,11 @@ def getResultsPOS(itemName):
     #turn the time series into supervised data
     data = makeSupervised(X)
     print(data)
-    
+
+    #if there have been less than 7 sales total
+    if data.shape[1] < 24:
+        predicts = [0]*15
+        return(predicted_dates, predicts)
 
     X = data.iloc[:,0:24]
     y = data.iloc[:,24]
@@ -121,7 +126,6 @@ def getResultsPOS(itemName):
     y_train = y[:350]
     y_val = y[350:380]
     y_test = y[380:]
-    predicted_dates = dates[380:]
 
     X_train2 = X[:380]
     y_train2 = y[:380]
@@ -438,6 +442,7 @@ def turn_to_dict(date, prediction):
 def analyzer(data):
     dates, prediction = getResults(data)
     
+    print("Heyyyyyy")
     #make them strings
     dates = [str(i) for i in dates]
     # prediction = [str(i) for i in prediction]
@@ -459,7 +464,7 @@ def analyzer(data):
     
 def analyzerPOS(data):
     dates, prediction = getResultsPOS(data)
-    
+    print("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
     #make them strings
     dates = [str(i) for i in dates]
     # prediction = [str(i) for i in prediction]

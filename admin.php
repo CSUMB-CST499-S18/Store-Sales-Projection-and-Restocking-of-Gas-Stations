@@ -64,7 +64,7 @@
                         console.log(status);
                         }
           });
-}
+};
     function searchfunction(){
         console.log("Entered Ajax Function")
         var input = $("#search").val();
@@ -98,11 +98,45 @@
                         }
           });
     };
+function searchfunctionPOS(){
+        console.log("Entered POOOOOS Ajax Function")
+        var input = $("#searchPOS").val();
+        $.ajax({
+              type: "POST",
+              dataType: 'text',
+              url: 'http://capstone2-jmts23.c9users.io:8081/learningPOS',
+              data: JSON.stringify({userInput: input}),
+              contentType: 'application/json',
+              success: function(response){
+                    console.log("Made it");
+                    output = response;
+                    newoutput = JSON.parse(output);
+                    console.log(output);
+                    console.log(output);
+                    $('#calendar').fullCalendar('destroy');
+                    $('#calendar').fullCalendar({
+                    defaultView: 'month',
+                    events: newoutput.results
+                    ,
+                    height: 300
+                    });
+                        $('#calendar').fullCalendar('gotoDate', '11-16-2017');
+                
+                 
+                },
+                 error: function(request,status, message) {
+                        console.log(request);
+                        console.log("----");
+                        console.log(status);
+                        }
+          });
+};
 
 
 </script>
 
 <?php
+error_reporting(0);
 
 session_start();
 if(!isset($_SESSION['username'])){
@@ -201,9 +235,9 @@ function listUsers() {
         <script>$( "#search" ).autocomplete({source: jArray});</script>
         <input id="searchsubmit" type="submit" onclick="searchfunction()">
       </form>
-      <form action="users.php" method="GET">
-        <input onchange="validatePOS();"input id="search" type="text" placeholder=" POS search">
-        <input id="submit" type="submit" value="Search">
+      <form>
+        <input id="searchPOS" type="text" placeholder=" POS search">
+        <input id="submit" type="submit" value="Search" onclick="searchfunctionPOS()">
       </form>
       <form action="about.html">
         <input type="submit" value="About Us">
