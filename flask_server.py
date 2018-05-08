@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, abort, jsonify, request, redirect, json
-from ML2 import analyzer
+from ML2 import analyzer, analyzerPOS
 app = Flask(__name__)
 app.debug = True
 
@@ -17,6 +17,16 @@ def learning():
     print("Arrived back to Server")
     print(jsonify(response))
     return jsonify(response)
+    
+@app.route('/learningPOS', methods=['POST'])
+def learningPOS():
+    #loads requested data sent form frontend
+    data = json.loads(request.data)
+    response = analyzerPOS(data)
+    print("Arrived back to Server")
+    print(jsonify(response))
+    return jsonify(response)
+
 
 
 if __name__ == '__main__':

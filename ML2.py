@@ -85,6 +85,7 @@ def getResultsPOS(itemName):
     print("The item passed in is:", itemName['userInput'])
 
     itemName = itemName['userInput']
+    print(type(itemName))
     
     #open the file
     df = openPreprocess("./data/sales.csv", 2)
@@ -159,7 +160,7 @@ def getSales(df, itemName, searchType):
         # print(item)
         item = item.drop(['Description'], axis = 1)
     else:
-        item = df.loc[df['POSCode'] == itemName]
+        item = df.loc[df['POSCode'] == int(itemName)]
         # print(item)
         item = item.drop(['POSCode'], axis = 1)
 
@@ -344,6 +345,12 @@ def neuralNet(X_train, y_train, X_val, y_val, X_test, y_test):
         #Finally, test on the test dataset
         predictions = results.eval(feed_dict={X: X_test, y: y_test})
         testRMSE = np.sqrt(mse.eval(feed_dict={X: X_test, y: y_test}))
+        
+         #fix predictions less than 0
+        for i in range(len(predictions)):
+            if predictions[i] < 0:
+                predictions[i] = 0
+
 
         print("NN Test RMSE: ", testRMSE)
         return predictions, testRMSE
@@ -426,20 +433,44 @@ def analyzer(data):
     
     #make them strings
     dates = [str(i) for i in dates]
-    prediction = [str(i) for i in prediction]
+    # prediction = [str(i) for i in prediction]
     
     #make a list of dictionaries
     superlist = []
     for i in range(len(dates)):
-        superlist.append({"Date": dates[i], "Prediction": prediction[i]})
+        superlist.append({"date": dates[i][:10], "title": round(np.float64(prediction[i]))})
         
-    print(superlist)
+    megasuperlist = {"results": superlist}
+    
+    print(megasuperlist)
     # formatted_result = turn_to_dict(dates,prediction)
     # print(formatted_result)
     
     # print("Got to end of analyzer")
     # print(json.dumps(formatted_result))
-    return superlist
+    return megasuperlist
+    
+def analyzerPOS(data):
+    dates, prediction = getResultsPOS(data)
+    
+    #make them strings
+    dates = [str(i) for i in dates]
+    # prediction = [str(i) for i in prediction]
+    
+    #make a list of dictionaries
+    superlist = []
+    for i in range(len(dates)):
+        superlist.append({"date": dates[i][:10], "title": round(np.float64(prediction[i]))})
+        
+    megasuperlist = {"results": superlist}
+    
+    print(megasuperlist)
+    # formatted_result = turn_to_dict(dates,prediction)
+    # print(formatted_result)
+    
+    # print("Got to end of analyzer")
+    # print(json.dumps(formatted_result))
+    return megasuperlist
 
 #----------------------------------------------------------------------------
 #Call the function with the product you want to predict the next 10 days for.
