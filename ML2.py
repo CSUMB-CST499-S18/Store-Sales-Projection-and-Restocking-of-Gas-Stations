@@ -36,6 +36,7 @@ def getResults(itemName):
 
     #get the dates
     dates = itemSales.index.values
+    predicted_dates = dates[380:]
 
     #keep the values from the dataframe
     X = itemSales.values
@@ -43,8 +44,13 @@ def getResults(itemName):
 
     #turn the time series into supervised data
     data = makeSupervised(X)
-    # print("DATA",data)
-    
+
+    #if there have been less than 7 sales total
+    if data.shape[1] < 24:
+        predicts = [0]*15
+        return(predicted_dates, predicts)
+        
+        
     # print("SHAPE", data.shape)
 
 
@@ -101,6 +107,7 @@ def getResultsPOS(itemName):
 
     #turn the time series into supervised data
     data = makeSupervised(X)
+    print(data)
     
 
     X = data.iloc[:,0:24]
@@ -166,17 +173,17 @@ def getSales(df, itemName, searchType):
 
     #Convert the date to proper datetime format
     item['Date'] = pd.to_datetime(item['Date'],format='%Y-%m-%d')
-
+    
     #add days of the week
     item['weekday'] = item['Date'].dt.dayofweek
     # print(item)
 
     #flip dataframe upside down
     item = item.iloc[::-1]
-
+    
     # print(item)
     item = item.set_index('Date')
-
+    
     #Account for the days that the item was not sold by adding those dates
     idx = pd.date_range('2016-11-01', '2017-11-30')
     item = item.reindex(idx, fill_value=0)
