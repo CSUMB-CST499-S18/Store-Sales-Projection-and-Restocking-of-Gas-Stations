@@ -30,7 +30,6 @@
   
    
         var item = description;
-        alert(item);
         console.log(item);
         console.log("Entered Ajax Function")
         $('#loadingmessage').show();
@@ -39,17 +38,51 @@
         $.ajax({
               type: "POST",
               dataType: 'text',
-              url: 'http://capstone-jsagisi.c9users.io:8081/learning',
+              url: 'http://capstone2-jmts23.c9users.io:8081/learning',
               data: JSON.stringify({userInput: item}),
               contentType: 'application/json',
               success: function(response){
                     console.log("Made it");
                     $('#loadingmessage').hide();
                     output = response;
-                    console.log(output);
-                    console.log(output);
-                   $("#results").text(output);
-                },
+                    newoutput = JSON.parse(output);
+                    console.log(newoutput);
+                    // var newOutput = output.substring(1, output .length-2);
+                    // console.log(newOutput);
+                    console.log("---");
+                    console.log(newoutput.results[0].Date);
+                    console.log(newoutput.results[0].Prediction);
+                    console.log(newoutput.results.length);
+
+                    
+                    $('#calendar').fullCalendar({
+                    defaultView: 'month',
+                    events: newoutput.results
+                    // [
+                    //     {
+                    //       title  : newoutput.results[x].Prediction,
+                    //       start  : newoutput.results[x].Date,
+                    //       allDay : true
+                    //     },
+                    //     {
+                    //       title  : 'event2',
+                    //       start  : '2010-01-05',
+                    //       end    : '2010-01-07'
+                    //     },
+                    //     {
+                    //       title  : 'event3',
+                    //       start  : '2010-01-09T12:30:00',
+                    //       allDay : true // will make the time show
+                    //     }
+                    // ]
+                    ,
+                    height: 300
+                });
+              }
+                
+            
+                   
+                ,
                  error: function(request,status, message) {
                         console.log(request);
                         console.log("----");
@@ -60,6 +93,7 @@
 
     
 }
+
 </script>
 
 <?php
@@ -175,26 +209,6 @@ function listUsers() {
      </div>
       <div id = "calendar">
          <script>
-            $('#calendar').fullCalendar({
-                defaultView: 'month',
-                events: [
-                    {
-                      title  : 'event1',
-                      start  : '2010-01-01'
-                    },
-                    {
-                      title  : 'event2',
-                      start  : '2010-01-05',
-                      end    : '2010-01-07'
-                    },
-                    {
-                      title  : 'event3',
-                      start  : '2010-01-09T12:30:00',
-                      allDay : false // will make the time show
-                    }
-                ],
-                height: 300
-            });
          </script>
      </div>
    </section>
