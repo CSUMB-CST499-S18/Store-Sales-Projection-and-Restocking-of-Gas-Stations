@@ -1,3 +1,4 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
      function validatePOS() {
             $.ajax({
@@ -25,16 +26,10 @@
             });
         }
     function passvalue(description) {
-    
-    
-  
-   
         var item = description;
         console.log(item);
         console.log("Entered Ajax Function")
         $('#loadingmessage').show();
-        
-        // var input = $("#user-input").val();
         $.ajax({
               type: "POST",
               dataType: 'text',
@@ -54,45 +49,56 @@
                     console.log(newoutput.results[0].Prediction);
                     console.log(newoutput.results.length);
 
-                    
+                    $('#calendar').fullCalendar('destroy');
                     $('#calendar').fullCalendar({
                     defaultView: 'month',
                     events: newoutput.results
-                    // [
-                    //     {
-                    //       title  : newoutput.results[x].Prediction,
-                    //       start  : newoutput.results[x].Date,
-                    //       allDay : true
-                    //     },
-                    //     {
-                    //       title  : 'event2',
-                    //       start  : '2010-01-05',
-                    //       end    : '2010-01-07'
-                    //     },
-                    //     {
-                    //       title  : 'event3',
-                    //       start  : '2010-01-09T12:30:00',
-                    //       allDay : true // will make the time show
-                    //     }
-                    // ]
                     ,
                     height: 300
                 });
-              }
-                
-            
-                   
-                ,
+                    $('#calendar').fullCalendar('gotoDate', '11-16-2017');
+              },
                  error: function(request,status, message) {
                         console.log(request);
                         console.log("----");
                         console.log(status);
                         }
           });
- 
-
-    
 }
+    function searchfunction(){
+        console.log("Entered Ajax Function")
+        var input = $("#search").val();
+        $.ajax({
+              type: "POST",
+              dataType: 'text',
+              url: 'http://capstone2-jmts23.c9users.io:8081/learning',
+              data: JSON.stringify({userInput: input}),
+              contentType: 'application/json',
+              success: function(response){
+                    console.log("Made it");
+                    output = response;
+                    newoutput = JSON.parse(output);
+                    console.log(output);
+                    console.log(output);
+                    $('#calendar').fullCalendar('destroy');
+                    $('#calendar').fullCalendar({
+                    defaultView: 'month',
+                    events: newoutput.results
+                    ,
+                    height: 300
+                    });
+                        $('#calendar').fullCalendar('gotoDate', '11-16-2017');
+                
+                 
+                },
+                 error: function(request,status, message) {
+                        console.log(request);
+                        console.log("----");
+                        console.log(status);
+                        }
+          });
+    };
+
 
 </script>
 
@@ -162,7 +168,7 @@ function listUsers() {
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="./css/styles.css" type="text/css" />
@@ -189,11 +195,11 @@ function listUsers() {
           <img src="./img/sscs-logo.png" alt="SSCS">
       </div> 
       <div class="search">
-      <form action="users.php" method="GET">
+      <form>
         <input id="search" type="text" placeholder="Type here">
         <!--script to predict text on user input-->
         <script>$( "#search" ).autocomplete({source: jArray});</script>
-        <input id="submit" type="submit" value="Search">
+        <input id="searchsubmit" type="submit" onclick="searchfunction()">
       </form>
       <form action="users.php" method="GET">
         <input onchange="validatePOS();"input id="search" type="text" placeholder=" POS search">
