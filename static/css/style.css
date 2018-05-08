@@ -35,3 +35,7 @@ body{
     margin: 0;
     padding: 1em;
 }
+.loadingmessage {
+    display:block;
+    margin:auto;
+}

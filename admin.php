@@ -68,6 +68,7 @@
     function searchfunction(){
         console.log("Entered Ajax Function")
         var input = $("#search").val();
+        $('#loadingmessage').show();
         $.ajax({
               type: "POST",
               dataType: 'text',
@@ -76,6 +77,7 @@
               contentType: 'application/json',
               success: function(response){
                     console.log("Made it");
+                    $('#loadingmessage').hide();
                     output = response;
                     newoutput = JSON.parse(output);
                     console.log(output);
@@ -101,6 +103,7 @@
 function searchfunctionPOS(){
         console.log("Entered POOOOOS Ajax Function")
         var input = $("#searchPOS").val();
+        $('#loadingmessage').show();
         $.ajax({
               type: "POST",
               dataType: 'text',
@@ -109,6 +112,7 @@ function searchfunctionPOS(){
               contentType: 'application/json',
               success: function(response){
                     console.log("Made it");
+                    $('#loadingmessage').hide();
                     output = response;
                     newoutput = JSON.parse(output);
                     console.log(output);
@@ -221,16 +225,14 @@ function listUsers() {
     </head>
     
     <body>
-        <div id='loadingmessage' style='display:none'>
-      <img src='loadinggraphic.gif'/>
-</div>
+      
     <section class="container">
       <div class="sscs"> 
           <img src="./img/sscs-logo.png" alt="SSCS">
       </div> 
       <div class="search">
       <form>
-        <input id="search" type="text" placeholder="Type here">
+        <input id="search" type="text" placeholder="Name Search">
         <!--script to predict text on user input-->
         <script>$( "#search" ).autocomplete({source: jArray});</script>
         <input id="searchsubmit" type="submit" onclick="searchfunction()">
@@ -247,6 +249,9 @@ function listUsers() {
       </form>
      <!--Calendar is rendered here. Events need to be changed to reflect the actual contents-->
      </div>
+       <div id='loadingmessage' style='display:none'>
+      <img src='loadinggraphic.gif'/>
+</div>
       <div id = "calendar">
          <script>
          </script>
