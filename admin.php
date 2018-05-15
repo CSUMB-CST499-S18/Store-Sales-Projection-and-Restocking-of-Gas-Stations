@@ -166,14 +166,13 @@ function listUsers() {
     echo "<table id=\"table1\">
         <tr>
  	    <th> Description &nbsp &nbsp  &nbsp &nbsp  &nbsp&nbsp &nbsp  &nbsp &nbsp  &nbsp</th>
- 	    <th> PosCode &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp  &nbsp&nbsp</th>
  	    <th> Total Sold &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp </th>
  	    <th> Total Stock &nbsp &nbsp  &nbsp&nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp  &nbsp</th>
         </tr>";
     foreach($results as $result) {
          echo "<tr>";
         echo "<td><a href=# onclick=\"passvalue('".$result['description']."')\">".$result['description']."</a></td>".
-        "<td>".$result['PosCode']."</td>".
+        // "<td>".$result['PosCode']."</td>".
         "<td>".$result['salesQuntity']."</td>".
         "<td>".$result['salesAmount']."</td>";
         echo "</tr>";

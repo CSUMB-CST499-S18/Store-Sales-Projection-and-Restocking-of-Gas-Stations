@@ -171,7 +171,8 @@ def getSales(df, itemName, searchType):
         # print(item)
         item = item.drop(['Description'], axis = 1)
     else:
-        item = df.loc[df['POSCode'] == int(itemName)]
+        df['POSCode'] = df['POSCode'].apply(str)
+        item = df.loc[df['POSCode'] == str(itemName)]
         # print(item)
         item = item.drop(['POSCode'], axis = 1)
 
