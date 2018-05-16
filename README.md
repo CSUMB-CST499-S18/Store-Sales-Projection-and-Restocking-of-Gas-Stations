@@ -1,26 +1,20 @@
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
 
 
-Hi there! Welcome to Cloud9 IDE!
+## Store Sales Projection and Restock (SSPaR)
 
-To get you started, we included a small hello world application.
+Steps to get application running:
 
-1) Open the hello-world.html file
+1) Open a terminal, cd into the project and type 'python flask_server.py'
+- This is being ran on a different port(8081) than the default 8080 that c9 runs on.
 
-2) Click on the Preview button to open a live preview pane
+2) Before running admin.php, the ajax call in admin.php url link should be changed to the url of the c9 link that the server is being hosted on (i.e http://capstone-(insert username).c9users.io:8081/learning) on both ajax functions within admin.php.
 
-3) Make some changes to the file, save, watch the preview, and have fun!
+3)open up admin.php with credentials
+username: admin
+password: password
 
-Happy coding!
-The Cloud9 IDE team
+4) When the admin.php is up, remove the s from https in your URL link in the browser.
 
+5) You will get a CORS error if you try to make requests to the Flask server, to work around that you can install a google chrome plugin Allow-Control-Allow-Origin: *
 
-## Support & Documentation
-
-Visit http://docs.c9.io for documentation, or http://support.c9.io for support.
-To watch some training videos, visit http://www.youtube.com/user/c9ide
+From there you should be good to go.
