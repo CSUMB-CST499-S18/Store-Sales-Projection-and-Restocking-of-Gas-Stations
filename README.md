@@ -1,9 +1,8 @@
 
-THE MOST UP TO DATE BRANCH IS THE final_backend BRANCH.IT HAS NOT BEEN MERGED TO MASTER YET.
 
 ## Store Sales Projection and Restock (SSPaR)
 
-Steps to get application running:
+### Steps to get application running:
 
 1) Open a terminal, cd into the project and type 'python flask_server.py'
 - This is being ran on a different port(8081) than the default 8080 that c9 runs on.
@@ -14,8 +13,11 @@ Steps to get application running:
 username: admin
 password: password
 
-4) When the admin.php is up, remove the s from https in your URL link in the browser.
+4) When the admin.php is up, make sure to use http instead of https.
 
 5) You will get a CORS error if you try to make requests to the Flask server, to work around that you can install a google chrome plugin Allow-Control-Allow-Origin: *
 
-From there you should be good to go.
+
+## Important Information 
+
+THE MOST UP TO DATE BRANCH IS THE final_backend BRANCH. IT HAS NOT BEEN MERGED TO MASTER YET.
